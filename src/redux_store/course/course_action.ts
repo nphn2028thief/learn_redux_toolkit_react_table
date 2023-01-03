@@ -14,6 +14,24 @@ export const getCourses = createAsyncThunk('courses/getCourses', async (_, thunk
     }
 });
 
+export const paginateCourses = createAsyncThunk(
+    'courses/paginateCourses',
+    async ({ _page, _limit }: { _page: number; _limit?: number }, { rejectWithValue }) => {
+        try {
+            const response = await httpRequest.get(`courses`, {
+                params: {
+                    _page,
+                    _limit,
+                },
+            });
+
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error);
+        }
+    },
+);
+
 export const createCourse = createAsyncThunk(
     'courses/createCourse',
     async (data: Omit<ICourse, 'id'>, { rejectWithValue }) => {
@@ -50,12 +68,17 @@ export const deleteCourse = createAsyncThunk('courses/deleteCourse', async (cour
     }
 });
 
-export const searchCourse = createAsyncThunk('courses/search', async (keyword: string, { rejectWithValue }) => {
+export const searchCourse = createAsyncThunk('courses/search', async (keyword: string, thunkAPI) => {
     try {
-        const response = await httpRequest.get(`courses?q=${keyword}`);
+        const response = await httpRequest.get(`courses`, {
+            signal: thunkAPI.signal,
+            params: {
+                q: keyword,
+            },
+        });
 
         return response.data;
     } catch (error) {
-        return rejectWithValue(error);
+        return thunkAPI.rejectWithValue(error);
     }
 });

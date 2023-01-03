@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
     Table,
     TableBody,
@@ -22,7 +22,6 @@ import ICourse from '../types/course';
 import { useAppDispatch, useAppSelector } from '../redux_store/store';
 import { setModalIsOpen } from '../redux_store/modal_slice';
 import { setIdForEdit, setCourseInfo } from '../redux_store/course/course_slice';
-import { getCourses } from '../redux_store/course/course_action';
 
 const columnHelper = createColumnHelper<ICourse>();
 
@@ -35,11 +34,6 @@ export default function TableDemo() {
     const [page, setPage] = useState<number>(1);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [rowsPerPage, setRowsPerPage] = useState<number>(15);
-    useEffect(() => {
-        const promise = dispatch(getCourses());
-
-        return () => promise.abort();
-    }, [dispatch]);
 
     const columns = [
         columnHelper.accessor('id', {
@@ -85,6 +79,7 @@ export default function TableDemo() {
                 <Stack direction="row" gap="4px">
                     <Tooltip title="Edit" arrow>
                         <IconButton
+                            size="large"
                             aria-label="Edit"
                             onClick={() => {
                                 dispatch(setIdForEdit(course.row.original.id));
@@ -98,6 +93,7 @@ export default function TableDemo() {
 
                     <Tooltip title="Delete" arrow>
                         <IconButton
+                            size="large"
                             aria-label="Delete"
                             onClick={() =>
                                 dispatch(

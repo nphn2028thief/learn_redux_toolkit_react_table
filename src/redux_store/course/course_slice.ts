@@ -1,6 +1,6 @@
 import { AsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import ICourse from '../../types/course';
-import { createCourse, deleteCourse, getCourses, searchCourse, updateCourse } from './course_action';
+import { createCourse, deleteCourse, getCourses, paginateCourses, searchCourse, updateCourse } from './course_action';
 
 type GenericAsyncThunk = AsyncThunk<unknown, unknown, any>;
 
@@ -41,6 +41,9 @@ const courseSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(getCourses.fulfilled, (state, action) => {
+                state.courses = action.payload;
+            })
+            .addCase(paginateCourses.fulfilled, (state, action) => {
                 state.courses = action.payload;
             })
             .addCase(createCourse.fulfilled, (state, action) => {

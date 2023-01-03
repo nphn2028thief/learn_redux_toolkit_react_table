@@ -14,12 +14,16 @@ export default function TableToolbar() {
     const debouncedValue = useDebounced(searchInput, 700);
 
     useEffect(() => {
-        if (!debouncedValue.trim) {
+        if (!debouncedValue.trim()) {
             dispatch(getCourses());
             return;
         }
 
-        dispatch(searchCourse(debouncedValue));
+        const searchPromise = dispatch(searchCourse(debouncedValue));
+
+        return () => {
+            searchPromise.abort();
+        };
     }, [debouncedValue, dispatch]);
 
     return (
